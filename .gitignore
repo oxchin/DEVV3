@@ -145,6 +145,26 @@ ios/build/
 ios/Pods/
 ios/Podfile.lock
 
+# Custom APK output
+android/apk_output/
+
+# Gradle cache/wrapper (optional if not needed in repo)
+#.gradle/
+#gradle/
+#gradlew
+#gradlew.bat
+
+# Capacitor generated (safe to regenerate)
+#android/capacitor-cordova-android-plugins/
+
+# Vite/SvelteKit extra cache
+vite.config.ts.timestamp*
+
+# Signing keys (never commit)
+*.jks
+*.keystore
+*.keystore.properties
+
 # IDE files
 .vscode/
 .idea/

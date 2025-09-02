@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">bmi-calculator-sveltekit</string>
+    <string name="title_activity_main">bmi-calculator-sveltekit</string>
+    <string name="package_name">rezky.io</string>
+    <string name="custom_url_scheme">rezky.io</string>
+</resources>

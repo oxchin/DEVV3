@@ -1,0 +1,50 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.7.2'
+        classpath 'com.google.gms:google-services:4.4.2'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+apply from: "variables.gradle"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+// Force Java 17 compileOptions for all Android modules (app and libraries), even if they set 21
+subprojects { subproj ->
+    def setJava17 = {
+        if (subproj.extensions.findByName('android')) {
+            subproj.android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+        }
+    }
+
+    // Apply when Android plugin is present
+    plugins.withId('com.android.application') { setJava17.call() }
+    plugins.withId('com.android.library') { setJava17.call() }
+
+    // Also re-apply after project evaluation to override any later changes
+    subproj.afterEvaluate { setJava17.call() }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
