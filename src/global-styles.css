@@ -2314,10 +2314,10 @@
         color: var(--text-secondary);
         font-size: 0.875rem;
         padding: clamp(2rem, 4vw, 4rem);
-        margin: clamp(2rem, 4vw, 4rem);
+        margin: 1rem auto 0;
         border-top: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 2rem;
-        max-width: 1000px;
+        max-width: 1030px;
       }
       
       .github-footer {
@@ -3348,6 +3348,11 @@
       .gauge-container{
         width: min(96vw, 480px);
       }
+
+      .footer-disclaimer{
+        max-width: 450px;
+      }
+ 
     }
 
     /* Media queries: mobile (incl. 1080x2340 logical CSS px density-aware) */
@@ -3376,6 +3381,9 @@
       .gauge-container{
         width: min(96vw, 320px);
       }
+      .footer-disclaimer{
+        max-width: 250px;
+      }
     }
 
     @media (min-width: 768px) {
@@ -3383,12 +3391,19 @@
         width: min(96vw, 690px);
         padding: 28px 30px 30px;
       }
+      .footer-disclaimer{
+        max-width: 550px;
+      }
     }
 
     @media (min-width: 1100px) {
       .gauge-container{
         width: min(96vw, 960px);
       }
+      .footer-disclaimer{
+        max-width: 950px;
+      }
+  
     }
 
     /* Performance: prefer rem spacing and leverage CSS vars already defined */
