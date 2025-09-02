@@ -12,7 +12,7 @@ const STATIC_CACHE = `static-cache-${CACHE_VERSION}`;
 const CORE_ASSETS = [
   '/',
   '/manifest.webmanifest',
-  '/favicon.webp'
+  // Keep core assets minimal and existing to avoid install failures
 ];
 
 self.addEventListener('install', (event) => {
@@ -51,7 +51,7 @@ self.addEventListener('fetch', (event) => {
           const cache = await caches.open(HTML_CACHE);
           cache.put(req, fresh.clone());
           return fresh;
-        } catch (err) {
+        } catch {
           const cached = await caches.match(req);
           return cached || caches.match('/');
         }
@@ -89,7 +89,7 @@ self.addEventListener('fetch', (event) => {
           const res = await fetch(req);
           cache.put(req, res.clone());
           return res;
-        } catch (err) {
+        } catch {
           return fetch(req);
         }
       })()

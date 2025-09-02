@@ -16,8 +16,8 @@
       showMainContent = true;
     }, revealDelay);
 
-    // Register static service worker for offline support
-    if ('serviceWorker' in navigator) {
+    // Register static service worker for offline support (production only)
+    if (import.meta.env.PROD && 'serviceWorker' in navigator) {
       // Delay registration a bit to avoid interfering with splash timing
       setTimeout(() => {
         navigator.serviceWorker
@@ -36,7 +36,6 @@
 </script>
 
 <svelte:head>
-  <link rel="icon" href="/assets/logobmii.webp" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </svelte:head>
 
@@ -48,7 +47,7 @@
 
 <CosmicParticles />
 
-<main id="main-content" role="main" class="main-content" class:visible={showMainContent}>
+<main id="main-content" class="main-content" class:visible={showMainContent}>
   <slot />
   
 </main>
