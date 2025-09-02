@@ -36,8 +36,8 @@
 </script>
 
 <svelte:head>
-  <link rel="icon" href="/favicon.webp" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <link rel="icon" href="/assets/logobmii.webp" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </svelte:head>
 
 <SplashScreen 
@@ -48,9 +48,10 @@
 
 <CosmicParticles />
 
-<div class="main-content" class:visible={showMainContent}>
+<main id="main-content" role="main" class="main-content" class:visible={showMainContent}>
   <slot />
-</div>
+  
+</main>
 
 <style>
   .main-content {
