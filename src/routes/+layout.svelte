@@ -16,6 +16,16 @@
       showMainContent = true;
     }, revealDelay);
 
+    // Register static service worker for offline support
+    if ('serviceWorker' in navigator) {
+      // Delay registration a bit to avoid interfering with splash timing
+      setTimeout(() => {
+        navigator.serviceWorker
+          .register('/service-worker.js', { scope: '/' })
+          .catch((err) => console.error('SW registration failed:', err));
+      }, 2000);
+    }
+
     return () => clearTimeout(timer);
   });
   

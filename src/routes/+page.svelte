@@ -27,6 +27,7 @@
   
   // BMI history for tracking calculations
   let bmiHistory: Array<{bmi: number, timestamp: Date}> = [];
+  const currentYear = new Date().getFullYear();
 
   // Lazy modal component
   let ModalComp: typeof import('$lib/components/ArticleModal.svelte').default | null = null;
@@ -74,7 +75,6 @@
   }
 
   function handleOpenModal(event: CustomEvent) {
-    console.log('Modal event received:', event.detail); // Debug
     modalTitle = event.detail.title || 'Article';
     modalContent = event.detail.description || 'Content loading...';
     // Lazy-load modal on first open
@@ -136,7 +136,9 @@
   <link rel="preload" as="image" href="/images/HDRstellar-v1.webp" fetchpriority="high" />
 </svelte:head>
 
-<div class="main-container">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<div class="main-container" id="main-content">
   <div>
     <Hero />
   </div>
@@ -379,12 +381,7 @@
     rel="noopener noreferrer"
     class="github-link"
   >
-    <span>
-      &copy; <span id="current-year"></span> Rezky Nightky. All rights reserved.
-    </span>
-    <script>
-      document.getElementById('current-year').textContent = new Date().getFullYear();
-    </script>
+    <span>&copy; {currentYear} Rezky Nightky. All rights reserved.</span>
   </a>
 </div>
 
