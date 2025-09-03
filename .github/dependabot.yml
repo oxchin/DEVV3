@@ -1,4 +1,3 @@
-# .github/dependabot.yml
 version: 2
 updates:
   # Enable version updates for npm
@@ -8,7 +7,7 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-      timezone: "Asia/Jakarta"
+      timezone: "Europe/Zurich"
     open-pull-requests-limit: 5
     reviewers:
       - "rezky_nightky"
@@ -29,7 +28,7 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:30"
-      timezone: "Asia/Jakarta"
+      timezone: "Europe/Zurich"
     open-pull-requests-limit: 3
     reviewers:
       - "rezky_nightky"
@@ -49,7 +48,7 @@ updates:
       interval: "weekly"  
       day: "tuesday"
       time: "09:00"
-      timezone: "Asia/Jakarta"
+      timezone: "Europe/Zurich"
     open-pull-requests-limit: 3
     reviewers:
       - "rezky_nightky" 
