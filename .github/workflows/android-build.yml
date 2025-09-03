@@ -27,7 +27,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '11'
         
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
@@ -36,7 +36,9 @@ jobs:
       run: npm ci
       
     - name: Build Svelte app
-      run: npm run build
+      run: |
+        npm run build
+        ls -la build/  # Verify build output
       
     - name: Sync Capacitor
       run: |
@@ -48,42 +50,42 @@ jobs:
       
     - name: Create keystore from secrets
       run: |
+        mkdir -p android/app
         echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.p12
         
     - name: Build Android APK (ARM64)
       working-directory: android
       run: |
         ./gradlew assembleRelease \
-          -Pandroid.injected.signing.store.file=keystore.p12 \
+          -Pandroid.injected.signing.store.file=app/keystore.p12 \
           -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" \
-          -Pandroid.injected.signing.key.alias="rezky-key" \
+          -Pandroid.injected.signing.key.alias="rezky-cahya-sahputra-key" \
           -Pandroid.injected.signing.key.password="${{ secrets.KEY_PASSWORD }}"
           
-    - name: Rename APK with version
+    - name: Copy APK to output directory
       run: |
-        VERSION=$(node -p "require('./package.json').version")
-        COMMIT_HASH=$(git rev-parse --short HEAD)
-        mv android/app/build/outputs/apk/release/app-release.apk \
-           android/app/build/outputs/apk/release/BMI-Calculator-v${VERSION}-${COMMIT_HASH}-arm64.apk
+        mkdir -p apk_output
+        cp android/app/build/outputs/apk/release/app-release.apk \
+           apk_output/package-release-arm64-v8a-1.apk
            
     - name: Upload APK as artifact
       uses: actions/upload-artifact@v4
       with:
         name: BMI-Calculator-APK
-        path: android/app/build/outputs/apk/release/BMI-Calculator-*.apk
+        path: apk_output/package-release-arm64-v8a-1.apk
         
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v1
       with:
-        files: android/app/build/outputs/apk/release/BMI-Calculator-*.apk
+        files: apk_output/package-release-arm64-v8a-1.apk
         body: |
           🚀 **BMI Calculator Release**
           
           **Changes in this version:**
           - Automated build for ARM64 architecture
           - Built by: rezky_nightky
-          - Platform: zenpc
+          - Platform for coding: zenpc
           - Branch: ${{ github.ref_name }}
           
           **Technical Details:**

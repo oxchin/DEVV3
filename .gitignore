@@ -146,7 +146,7 @@ ios/Pods/
 ios/Podfile.lock
 
 # Custom APK output
-android/apk_output/
+apk_output/
 
 # Gradle cache/wrapper (optional if not needed in repo)
 #.gradle/

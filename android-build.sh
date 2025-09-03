@@ -18,9 +18,11 @@ readonly SCRIPT_VERSION="2.0.0"
 readonly CONFIG_FILE="$HOME/.android_build_config"
 readonly LOG_FILE="build_$(date +%Y%m%d_%H%M%S).log"
 
+# Removed apksigner usage due to EC algorithm incompatibility
+
 # Default paths and settings
-DEFAULT_KEYSTORE="$HOME/.android/keystore/rezky-io-package-release.jks"
-DEFAULT_ALIAS="rezky.io"
+DEFAULT_KEYSTORE="$HOME/.android/keystore/rezky-cahya-sahputra-key.p12"
+DEFAULT_ALIAS="rezky-cahya-sahputra-key"
 JAVA_BASE_PATH="/usr/lib/jvm"
 
 # Colors and formatting
@@ -35,6 +37,8 @@ readonly NC='\033[0m'
 
 # Enhanced logging functions
 log() { echo -e "[$(date '+%H:%M:%S')] $*" | tee -a "$LOG_FILE"; }
+
+# Removed resolve_apksigner function - no longer using apksigner due to EC algorithm issues
 info() { log "${BLUE}[INFO]${NC} $*"; }
 success() { log "${GREEN}[✓]${NC} $*"; }
 warn() { log "${YELLOW}[⚠]${NC} $*"; }
@@ -160,10 +164,7 @@ validate_dependencies() {
             exit 1
         fi
         
-        # Check for apksigner
-        if ! command -v apksigner >/dev/null 2>&1 && ! [[ -f "$JAVA_HOME/bin/apksigner" ]]; then
-            warn "apksigner not found. APK signing may not be available"
-        fi
+        # APK signing will use jarsigner (supports EC algorithms)
     fi
     
     success "All dependencies validated"
@@ -212,8 +213,8 @@ build_android_app() {
     
     # Clean Android build directories
     info "Cleaning Android build directories..."
-    rm -rf android/app/build android/apk_output
-    mkdir -p android/apk_output
+    rm -rf android/app/build
+    mkdir -p apk_output
     
     # Copy web assets
     info "Copying web assets to Android..."
@@ -239,7 +240,7 @@ handle_apk_output() {
     step "Processing APK output"
     
     local apk_search_paths=(
-        "android/apk_output/*.apk"
+        "apk_output/*.apk"
         "android/app/build/outputs/apk/release/*.apk"
         "android/app/build/outputs/apk/**/release/*.apk"
     )
@@ -256,10 +257,10 @@ handle_apk_output() {
     fi
     
     # Copy to output directory if not already there
-    if [[ ! "$APK_PATH" =~ android/apk_output/ ]]; then
+    if [[ ! "$APK_PATH" =~ apk_output/ ]]; then
         info "Copying APK to output directory..."
-        cp "$APK_PATH" android/apk_output/
-        APK_PATH="android/apk_output/$(basename "$APK_PATH")"
+        cp "$APK_PATH" apk_output/
+        APK_PATH="apk_output/$(basename "$APK_PATH")"
     fi
     
     success "APK located at: $APK_PATH"
@@ -288,7 +289,7 @@ rename_apk() {
     CUSTOM_NAME="${CUSTOM_NAME:-$suggested_name}"
     
     if [[ -n "$CUSTOM_NAME" ]]; then
-        local new_apk="android/apk_output/${CUSTOM_NAME}.apk"
+        local new_apk="apk_output/${CUSTOM_NAME}.apk"
         if mv "$APK_PATH" "$new_apk"; then
             APK_PATH="$new_apk"
             success "APK renamed to: $APK_PATH"
@@ -298,7 +299,7 @@ rename_apk() {
     fi
 }
 
-# Enhanced APK signing
+# Enhanced APK signing using jarsigner (supports EC algorithms)
 sign_apk() {
     if [[ "${ALWAYS_SIGN:-}" == "true" ]]; then
         local sign_choice="y"
@@ -342,18 +343,17 @@ sign_apk() {
     echo
     [[ -z "$key_pass" ]] && key_pass="$keystore_pass"
     
-    info "Signing APK..."
-    if apksigner sign \
-        --ks "$KEYSTORE_PATH" \
-        --ks-key-alias "$KEY_ALIAS" \
-        --ks-pass pass:"$keystore_pass" \
-        --key-pass pass:"$key_pass" \
-        "$APK_PATH" 2>&1 | tee -a "$LOG_FILE"; then
+    info "Signing APK using jarsigner (EC algorithm compatible)..."
+    if jarsigner -verbose -sigalg SHA256withECDSA -digestalg SHA-256 \
+        -keystore "$KEYSTORE_PATH" \
+        -storepass "$keystore_pass" \
+        -keypass "$key_pass" \
+        "$APK_PATH" "$KEY_ALIAS" 2>&1 | tee -a "$LOG_FILE"; then
         success "APK signed successfully"
         
         # Verify signature
         info "Verifying APK signature..."
-        if apksigner verify "$APK_PATH" 2>&1 | tee -a "$LOG_FILE"; then
+        if jarsigner -verify -verbose -certs "$APK_PATH" 2>&1 | tee -a "$LOG_FILE"; then
             success "APK signature verified"
         else
             warn "APK signature verification failed"
@@ -421,19 +421,6 @@ main() {
     echo -e "\n${GREEN}${BOLD}🎉 Build completed successfully!${NC}"
     [[ -n "${APK_PATH:-}" ]] && success "Final APK: $APK_PATH"
     success "Build log: $LOG_FILE"
-    
-    # Offer to install APK
-    if command -v adb >/dev/null 2>&1 && [[ -n "${APK_PATH:-}" ]]; then
-        read -p "📱 Install APK to connected device? (y/N): " install_choice
-        if [[ "$install_choice" =~ ^[Yy]$ ]]; then
-            info "Installing APK..."
-            if adb install -r "$APK_PATH"; then
-                success "APK installed successfully"
-            else
-                warn "APK installation failed"
-            fi
-        fi
-    fi
 }
 
 # Script execution
