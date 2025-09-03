@@ -37,7 +37,7 @@ jobs:
       
     - name: Build Svelte app
       run: |
-        npm run build
+        MOBILE_BUILD=true npm run build
         ls -la build/  # Verify build output
       
     - name: Sync Capacitor
