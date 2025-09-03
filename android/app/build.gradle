@@ -5,8 +5,8 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "rezky.nightky"
-        // Set explicit minSdk for release per requirements
-        minSdkVersion 24
+        // Set minimum Android SDK version to 26 (Android 8.0)
+        minSdkVersion 26
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0.0"
@@ -21,31 +21,50 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
-    // Force Java 17 for Android compilation
+    // Set Java source and target compatibility to Java 11
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    
+    // Add Java compiler lint options
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += ["-Xlint:unchecked", "-Xlint:deprecation"]
+    }
+    signingConfigs {
+        release {
+            storeFile file("/home/rezky_nightky/git-repo/mainoxyconf/private/rezky-cahya-sahputra-key.p12")
+            storePassword "nn.nightkyo2"
+            keyAlias "rezky-cahya-sahputra-key"
+            keyPassword "nn.nightkyo2"
+            storeType "PKCS12"
+            // Keep modern signing schemes enabled
+            enableV1Signing true
+            enableV2Signing true
+            enableV3Signing true
+            enableV4Signing true
+        }
     }
     buildTypes {
         release {
-            //signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             minifyEnabled false
             shrinkResources false
             debuggable false
             // Use optimized default ProGuard config
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             jniDebuggable false
-            renderscriptDebuggable false
             zipAlignEnabled true
-            embedSourceStamp true
         }
     }
 }
 
 repositories {
-    flatDir{
-        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
-    }
+    mavenCentral()
+    google()
+    maven { url "https://jitpack.io" }
+    // Local Maven repo for any custom dependencies
+    maven { url "$rootDir/local-maven-repo" }
 }
 
 dependencies {
@@ -58,7 +77,6 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
-    classpath 'com.android.tools.build:gradle:8.1.0'
 }
 
 apply from: 'capacitor.build.gradle'
@@ -72,22 +90,16 @@ try {
     logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
 }
 
-// Override any Java 21 settings introduced by capacitor.build.gradle
-android {
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-}
+// (Removed duplicate android { compileOptions } block; compileOptions are already set above)
 
 // Copy the generated release APK to a custom folder with a friendly name
 tasks.register("copyReleaseApk", Copy) {
     dependsOn("assembleRelease")
     from("$buildDir/outputs/apk/release")
     include("*.apk")
-    into("$rootDir/apk_output")
-    // Name like release-v1.0.0.apk based on defaultConfig.versionName
+    into("$rootDir/../apk_output")
+    // Name APK as package-release-arm64-v8a-1.apk
     rename { String fileName ->
-        return "release-v${android.defaultConfig.versionName}.apk"
+        return "package-release-dev-arm64-v8a-1.apk"
     }
 }
