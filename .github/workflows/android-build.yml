@@ -56,7 +56,7 @@ jobs:
     - name: Build Android APK (ARM64)
       working-directory: android
       env:
-        SPARK_KEYSTORE: app/keystore.p12
+        SPARK_KEYSTORE: keystore.p12
         SPARK_KEYSTORE_PASS: ${{ secrets.SPARK_KEYSTORE_PASS }}
         SPARK_ALIAS: ${{ secrets.SPARK_ALIAS }}
         SPARK_KEY_PASS: ${{ secrets.SPARK_KEY_PASS }}
