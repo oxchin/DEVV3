@@ -50,8 +50,8 @@ jobs:
       
     - name: Create keystore from secrets
       run: |
-        mkdir -p android
-        echo "${{ secrets.SPARK_KEYSTORE }}" | base64 -d > android/keystore.p12
+        mkdir -p android/app
+        echo "${{ secrets.SPARK_KEYSTORE }}" | base64 -d > android/app/keystore.p12
         
     - name: Build Android APK (ARM64)
       working-directory: android
