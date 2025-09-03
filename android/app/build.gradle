@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "rezky.io"
+    namespace "rezky.nightky"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "rezky.io"
+        applicationId "rezky.nightky"
         // Set explicit minSdk for release per requirements
         minSdkVersion 24
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -28,13 +28,16 @@ android {
     }
     buildTypes {
         release {
-            // Ensure release is non-debuggable
+            //signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
             debuggable false
-            // Enable code shrinking and resource shrinking for smaller APKs
-            minifyEnabled true
-            shrinkResources true
             // Use optimized default ProGuard config
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            jniDebuggable false
+            renderscriptDebuggable false
+            zipAlignEnabled true
+            embedSourceStamp true
         }
     }
 }
@@ -55,6 +58,7 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+    classpath 'com.android.tools.build:gradle:8.1.0'
 }
 
 apply from: 'capacitor.build.gradle'

@@ -1,0 +1,64 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "rezky_nightky"
+    assignees:
+      - "rezky_nightky"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+    
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:30"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "rezky_nightky"
+    assignees:
+      - "rezky_nightky"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "ci/cd"
+      - "automated"
+
+  # Enable version updates for Gradle (Android dependencies)
+  - package-ecosystem: "gradle"
+    directory: "/android"
+    schedule:
+      interval: "weekly"  
+      day: "tuesday"
+      time: "09:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "rezky_nightky" 
+    assignees:
+      - "rezky_nightky"
+    commit-message:
+      prefix: "android"
+      include: "scope"
+    labels:
+      - "android"
+      - "dependencies"
+      - "automated"
