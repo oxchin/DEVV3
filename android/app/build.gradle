@@ -34,10 +34,10 @@ android {
     signingConfigs {
         release {
             // Use environment variables for signing config (secure for CI/CD)
-            storeFile file(System.getenv("RELEASE_STORE_FILE") ?: "keystore.p12")
-            storePassword System.getenv("RELEASE_STORE_PASSWORD") ?: System.getenv("SPARK_KEYSTORE_PASS")
-            keyAlias System.getenv("RELEASE_KEY_ALIAS") ?: System.getenv("SPARK_ALIAS")
-            keyPassword System.getenv("RELEASE_KEY_PASSWORD") ?: System.getenv("SPARK_KEY_PASS")
+            storeFile file(System.getenv("SPARK_KEYSTORE") ?: "keystore.p12")
+            storePassword System.getenv("SPARK_KEYSTORE_PASS")
+            keyAlias System.getenv("SPARK_ALIAS")
+            keyPassword System.getenv("SPARK_KEY_PASS")
             storeType "PKCS12"
             // Keep modern signing schemes enabled
             enableV1Signing true
