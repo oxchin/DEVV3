@@ -50,14 +50,14 @@ jobs:
       
     - name: Create keystore from secrets
       run: |
-        mkdir -p android/app
-        echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.p12
+        mkdir -p android
+        echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/keystore.p12
         
     - name: Build Android APK (ARM64)
       working-directory: android
       run: |
         ./gradlew assembleRelease \
-          -Pandroid.injected.signing.store.file=app/keystore.p12 \
+          -Pandroid.injected.signing.store.file=keystore.p12 \
           -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" \
           -Pandroid.injected.signing.key.alias="rezky-cahya-sahputra-key" \
           -Pandroid.injected.signing.key.password="${{ secrets.KEY_PASSWORD }}"
