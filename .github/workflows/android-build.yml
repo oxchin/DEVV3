@@ -51,16 +51,17 @@ jobs:
     - name: Create keystore from secrets
       run: |
         mkdir -p android
-        echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/keystore.p12
+        echo "${{ secrets.SPARK_KEYSTORE }}" | base64 -d > android/keystore.p12
         
     - name: Build Android APK (ARM64)
       working-directory: android
+      env:
+        RELEASE_STORE_FILE: keystore.p12
+        RELEASE_STORE_PASSWORD: ${{ secrets.SPARK_KEYSTORE_PASS }}
+        RELEASE_KEY_ALIAS: ${{ secrets.SPARK_ALIAS }}
+        RELEASE_KEY_PASSWORD: ${{ secrets.SPARK_KEY_PASS }}
       run: |
-        ./gradlew assembleRelease \
-          -Pandroid.injected.signing.store.file=keystore.p12 \
-          -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" \
-          -Pandroid.injected.signing.key.alias="rezky-cahya-sahputra-key" \
-          -Pandroid.injected.signing.key.password="${{ secrets.KEY_PASSWORD }}"
+        ./gradlew assembleRelease
           
     - name: Copy APK to output directory
       run: |

@@ -33,10 +33,11 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("/home/rezky_nightky/git-repo/mainoxyconf/private/rezky-cahya-sahputra-key.p12")
-            storePassword "nn.nightkyo2"
-            keyAlias "rezky-cahya-sahputra-key"
-            keyPassword "nn.nightkyo2"
+            // Use environment variables for signing config (secure for CI/CD)
+            storeFile file(System.getenv("RELEASE_STORE_FILE") ?: "keystore.p12")
+            storePassword System.getenv("RELEASE_STORE_PASSWORD") ?: System.getenv("SPARK_KEYSTORE_PASS")
+            keyAlias System.getenv("RELEASE_KEY_ALIAS") ?: System.getenv("SPARK_ALIAS")
+            keyPassword System.getenv("RELEASE_KEY_PASSWORD") ?: System.getenv("SPARK_KEY_PASS")
             storeType "PKCS12"
             // Keep modern signing schemes enabled
             enableV1Signing true
