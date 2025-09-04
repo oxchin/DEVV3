@@ -66,6 +66,6 @@
 		"@fontsource/outfit": "^5.2.6",
 		"@fontsource/poppins": "^5.2.6",
 		"@fontsource/space-grotesk": "^5.2.8",
-		"lucide-svelte": "^0.446.0"
+		"lucide-svelte": "^0.542.0"
 	}
 }
