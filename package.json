@@ -65,7 +65,7 @@
 		"@fontsource/manrope": "^5.2.6",
 		"@fontsource/outfit": "^5.2.6",
 		"@fontsource/poppins": "^5.2.6",
-		"@fontsource/space-grotesk": "^5.2.8",
+		"@fontsource/space-grotesk": "^5.2.10",
 		"lucide-svelte": "^0.446.0"
 	}
 }
